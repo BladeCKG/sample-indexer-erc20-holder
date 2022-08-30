@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const ZERO_ADDRESS = '0x0000000000000000000000000000000000000000';
 const CONFIRMATIONS = 12;
 
@@ -5,8 +7,8 @@ const PROVIDER = 'https://mainnet.infura.io/v3/21f9184fc9d84c388832f178da5de168'
 const DEBUG = true;
 
 // ZEP
-const ADDRESS = '0x00fdae9174357424a78afaad98da36fd66dd9e03';
-const START_BLOCK = 6563800;
+const ADDRESS = process.env.CONTRACT_ADDRESS//'0x00fdae9174357424a78afaad98da36fd66dd9e03';
+const START_BLOCK = parseInt( process.env.CONTRACT_BLOCK)//6563800;
 const BATCH_SIZE = 100000;
 
 // DAI
@@ -43,7 +45,7 @@ module.exports = class ERC20Indexer {
   }
 
   getLastBlock() {
-    return lastBlockProcessed;
+    return this.lastBlockProcessed;
   }
 
   async reduceEvent(event) {

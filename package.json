@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "bignumber.js": "^8.1.1",
+    "dotenv": "^16.0.1",
     "express": "^4.16.4",
     "lodash.chunk": "^4.2.0",
     "lodash.mapvalues": "^4.6.0",
