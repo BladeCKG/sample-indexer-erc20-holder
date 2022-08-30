@@ -1,32 +1,40 @@
 const Indexer = require('./indexer');
-const express = require('express')
-const mapValues = require('lodash.mapvalues');
 const Web3 = require('web3');
+const {Parser} = require('json2csv');
+const fs = require('fs')
 
 const PORT = 3000;
 
-function main() {
-  const app = express()
+async function main() {
+  // const app = express()
   const indexer = new Indexer();
 
-  app.get('/balances.json', (_req, res) => {
-    const ov = indexer.getBalances()
-    res.send(mapValues(ov, b => {
-      const value = Web3
-        .utils
-        .fromWei(b.toString(10));
-      return value
-    }));
-  });
-
-  app.get('/block.json', (_req, res) => {
-    res.send({
-      block: indexer.getLastBlock()
+  // app.listen(PORT);
+  await indexer.start();
+  const ov = indexer.getBalances();
+  const balanceList = [];
+  Object
+    .keys(ov)
+    .forEach((address) => {
+      balanceList.push({
+        address,
+        balance: Web3
+          .utils
+          .fromWei(ov[address].toString(10))
+      })
     });
-  })
 
-  app.listen(PORT);
-  indexer.start();
+  const json2csvParser = new Parser();
+  const csv = json2csvParser.parse(balanceList);
+
+  const path = "./balance.csv"
+  fs.writeFile(path, csv, err => {
+    if (err) {
+      console.error(err);
+    }
+    // file written successfully
+  });
+  // console.log(csv)
 };
 
 main();
